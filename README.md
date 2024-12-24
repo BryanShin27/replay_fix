@@ -13,10 +13,10 @@ For those of you interested in the source code, you can open `replay_fix.py`.
 
 This program is designed to work on Windows 10 / Windows 11 computers. If you are a Mac or Linux user, please consult the above links for the manual workaround.
 
-- 1. Exit (EXIT, not simply log out/minimize) StarCraft II, Battle.net, Agent.exe, the map editor, and any other StarCraft II/Blizzard-related programs.
-- 2. Click on the green "<> Code" button, and select "Download ZIP".
+- 1. Exit (I mean EXIT, not simply log out/minimize) StarCraft II, Battle.net, Agent.exe, the map editor, and any other StarCraft II/Blizzard-related programs.
+- 2. Scroll to the top of the page, click on the green "<> Code" button, and select "Download ZIP".
 - 3. Unzip the downloaded folder, open it, and run `replay_fix.exe`.
-    - Your Internet browser and/or antivirus may freak out when trying to download or unzip this. You may need to allow an exception manually.
+    - Your Internet browser and/or antivirus may freak out when trying to download or unzip this. If this happens, you will need to allow an exception manually.
 - 4. Follow the instructions to locate your StarCraft II installation folder.
 - 5. A file named `SC2Switcher_x64.exe - Shortcut` should appear in the unzipped folder. Run it.
     - StarCraft II should load as normal, except the game will hang on a "Connecting to Blizzard services" screen.
