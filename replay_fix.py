@@ -45,7 +45,7 @@ def select_folder():
 
     while(True):
         # tell the user to find their StarCraft II install folder
-        user_response = messagebox.askokcancel("Folder Selection", "In the next window, please select your StarCraft II installation folder.\nNote: This folder should be named 'StarCraft II',\nand should be under C:\Program Files (x86) if you did not manually set it.\n(Click OK to continue)")
+        user_response = messagebox.askokcancel("Folder Selection", "In the next window, please select your StarCraft II installation folder.\nNote: This folder should be named 'StarCraft II',\nand is usually under Program Files (x86) on your main drive.\n(Click OK to continue)")
         if not user_response:
             sys.exit(0)
 
