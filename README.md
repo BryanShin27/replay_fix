@@ -25,4 +25,6 @@ This program is designed to work on Windows 10 / Windows 11 computers. If you ar
 
 If you screw up, 99% of all problems should be resolved simply by launching StarCraft II the normal way or using Scan and Repair. That said, I am not responsible for any issues caused by incorrectly following the instructions.
 
+Your usual settings (e.g. sound, graphics, gameplay, etc.) may not be preserved in Offline Mode, so please adjust these before casting replays.
+
 This program will need to be updated every few weeks, as Blizzard frequently rotates their CDN configuration. If it has been some time since the last update and you need to view old replays, please contact me on Discord at `randomhyperone` so I can update the CDN string. You can also find me in the [StarCraft Evolution League Discord server](https://discord.gg/VqPFXFW6A8).
