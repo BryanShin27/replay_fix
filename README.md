@@ -19,8 +19,8 @@ This program is designed to work on Windows 10 / Windows 11 computers. If you ar
     - Your Internet browser and/or antivirus may freak out when trying to download or unzip this. If this happens, you will need to allow an exception manually.
 - 4. Follow the instructions to locate your StarCraft II installation folder.
 - 5. A file named `SC2Switcher_x64.exe - Shortcut` should appear in the unzipped folder. Run it.
-    - StarCraft II should load as normal, but the login screen will look a bit different, similar to `![this](Images/replay_fix_1.png)`.
-    - After a few seconds, the game will hang on a "Connecting to Blizzard services" dialog, as in `![this](Images/replay_fix_2.png)`.
+    - StarCraft II should load as normal, but the login screen will look a bit different, similar to `replay_fix_1.png`.
+    - After a few seconds, the game will hang on a "Connecting to Blizzard services" dialog, as in `replay_fix_2.png`.
     - You can select "Play Offline" at this point, and you will be able to view v5.0.13 replays (but not any other versions).
     - Note that you can still live-stream or use other Internet services, but StarCraft II will not have any online functionality.
 
