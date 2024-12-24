@@ -71,7 +71,7 @@ def select_folder():
                 continue
 
         # just in case the user went too deep into the folder
-        if not folder_path.endswith("StarCraft II"):
+        if not folder_path.endswith("StarCraft II") or folder_path.endswith ("StarCraft II/StarCraft II"):
             temp_string = folder_path.split("StarCraft II")[0]
             # messagebox.showinfo("Adjusting Selection","Input detected: " + folder_path + "\nDefaulting to: " + temp_string + "StarCraft II")
             folder_path = temp_string + "StarCraft II"
