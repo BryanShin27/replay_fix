@@ -25,7 +25,7 @@ This program is designed to work on Windows 10 / Windows 11 computers. If you ar
     - You can select "Play Offline" at this point, and you will be able to view v5.0.13 replays (but not any other versions).
     - Note that you can still live-stream or use other Internet services, but StarCraft II will not have any online functionality.
 
-If you screw up, 99% of all problems should be resolved simply by launching StarCraft II the normal way or using Scan and Repair. That said, I am not responsible for any issues caused by incorrectly following the instructions.
+If you screw up, or are simply done viewing old replays and want to play the current version again, simply by launch StarCraft II the normal way or use Scan and Repair. That said, I am not responsible for any issues caused by incorrectly following the instructions.
 
 Your usual settings (e.g. sound, graphics, gameplay, etc.) may not be preserved in Offline Mode, so please adjust these before casting replays.
 
