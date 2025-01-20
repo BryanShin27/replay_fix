@@ -2,7 +2,7 @@ import os
 import shutil
 import sys
 import tkinter as tk
-from tkinter import filedialog, messagebox
+from tkinter import filedialog, messagebox, ttk
 import winshell
 
 primary_path = "C:/Program Files (x86)/StarCraft II"
@@ -14,108 +14,165 @@ switcher_path = primary_path + "/Support64/SC2Switcher_x64.exe"
 support64_path = primary_path + "/Support64"
 local_path = os.getcwd()
 
+# CDN configuration --- must be updated every ~3-4(?) weeks
+cdn = "124b1d8953c97fc96ff446ccb641a89c"
+
+# idk why I ended up needing to have this here but I guess I do
+build_init = "Branch!STRING:0|Active!DEC:1|Build Key!HEX:16|CDN Key!HEX:16|Install Key!HEX:16|IM Size!DEC:4|CDN Path!STRING:0|CDN Hosts!STRING:0|CDN Servers!STRING:0|Tags!STRING:0|Armadillo!STRING:0|Last Activated!STRING:0|Version!STRING:0|KeyRing!HEX:16|Product!STRING:0"
+
+# version to restore --- defaults to 5.0.13
+target_version = "5.0.13"
+
+# version: [build number, build info, version + build number]
+version_dict = {
+    "5.0.12": [
+        91115,
+        "\nus|1|51dfb8730d960b7914d59ef9841f29ee|" + cdn + "|06e931af72abd6f062324d830ff094ae||tpr/sc2|level3.blizzard.com us.cdn.blizzard.com|http://level3.blizzard.com/?maxhosts=4 http://us.cdn.blizzard.com/?maxhosts=4 https://blzddist1-a.akamaihd.net/?fallback=1&maxhosts=4 https://level3.ssl.blizzard.com/?fallback=1&maxhosts=4 https://us.cdn.blizzard.com/?fallback=1&maxhosts=4|Windows code US? acct-CAN? geoip-CA? enUS speech?:Windows code US? acct-CAN? geoip-CA? enUS text?|||5.0.12.91115||", "5.0.12.91115"
+    ],
+    "5.0.13": [
+        92440,
+        "\nus|1|6b36ffd0acf5bf1cd8c3e289be78d120|" + cdn + "|f5703696f8f01d56ea9db9d115099dc7||tpr/sc2|level3.blizzard.com kr.cdn.blizzard.com blizzard.gcdn.cloudn.co.kr|http://blizzard.gcdn.cloudn.co.kr/?maxhosts=4 http://kr.cdn.blizzard.com/?maxhosts=4 http://level3.blizzard.com/?maxhosts=4 https://blizzard.gcdn.cloudn.co.kr/?fallback=1&maxhosts=4 https://blzddist1-a.akamaihd.net/?fallback=1&maxhosts=4 https://blzddistkr1-a.akamaihd.net/?fallback=1&maxhosts=4 https://kr.cdn.blizzard.com/?fallback=1&maxhosts=4 https://level3.ssl.blizzard.com/?fallback=1&maxhosts=4|Windows code US? acct-USA? geoip-US? enUS speech?:Windows code US? acct-USA? geoip-US? enUS text?|||5.0.13.92440||", "5.0.13.92440"
+    ],
+    "5.0.14": [
+        93333,
+        "us|1|8453c2f1c98b955334c7284215429c36|" + cdn + "|f5703696f8f01d56ea9db9d115099dc7||tpr/sc2|level3.blizzard.com us.cdn.blizzard.com|http://level3.blizzard.com/?maxhosts=4 http://us.cdn.blizzard.com/?maxhosts=4 https://blzddist1-a.akamaihd.net/?fallback=1&maxhosts=4 https://level3.ssl.blizzard.com/?fallback=1&maxhosts=4 https://us.cdn.blizzard.com/?fallback=1&maxhosts=4|Windows code US? acct-USA? geoip-US? enUS speech?:Windows code US? acct-USA? geoip-US? enUS text?:Windows code US? acct-USA? geoip-US? koKR speech?:Windows code US? acct-USA? geoip-US? koKR text?|||5.0.14.93333||", "5.0.14.93333"
+    ]
+}
+
 def main():
-    # Get user StarCraft II installation location
-    primary_path = select_folder()
-    
-    # Step 0: Copy old files into a backup
-    # Step 1: Ensure Battle.net or anything related is not running
-    # Step 2: Ensure that the only binary within the Versions folder is 92440
-    move_base_92440()
+    # Get desired game version and user StarCraft II installation path
+    global target_version, primary_path
+    [target_version, primary_path] = select_version_and_install_path()
+    print(f"Version selected: {target_version}")
+    print(f"Installation folder: {primary_path}")
+
+    # Prepare installation folder by moving unneeded/important files
     backup_files()
 
-    # Step 3: Rename StarCraft II/Support/BlizzardBrowser/BlizzardBrowser.exe
-    if rename_browser():
-        return
-    
-    # Step 4: Add build info to .build.info
-    # Step 5: Replace the outdated CDN with the current one
+    # Move needed game dependencies
+    move_base()
+
+    # Add build info and CDN configuration
     add_build_info()
 
-    # Step 6: Create a shortcut of StarCraft II/Support64/SC2Switcher_x64.exe
+    # Create SC2Switcher shortcut
     create_shortcut()
-    # Step 7: Ensure Battle.net is shut off and launch SC2Switcher_x64.exe shortcut
-    
-    print("Script complete.")
-    return
 
-def select_folder():
+def select_version_and_install_path():
     root = tk.Tk()
-    root.withdraw()
+    root.title("Select StarCraft II version to recover")
 
-    while(True):
-        # tell the user to find their StarCraft II install folder
-        user_response = messagebox.askokcancel("Folder Selection", "In the next window, please select your StarCraft II installation folder.\nNote: This folder should be named 'StarCraft II',\nand is usually under Program Files (x86) on your main drive.\n(Click OK to continue)")
+    # Variable to store selected version
+    selected_version = tk.StringVar(value="Select a version")
+
+    # Set window size and center it on the screen
+    window_width, window_height = 400, 200
+    screen_width = root.winfo_screenwidth()
+    screen_height = root.winfo_screenheight()
+    x = (screen_width // 2) - (window_width // 2)
+    y = (screen_height // 2) - (window_height // 2)
+    root.geometry(f"{window_width}x{window_height}+{x}+{y}")
+
+    # Configure grid for centering
+    root.grid_columnconfigure(0, weight=1)  # Center column
+    root.grid_rowconfigure(0, weight=1)  # Space above dropdown
+    root.grid_rowconfigure(2, weight=1)  # Space below button
+
+    # Create a dropdown
+    dropdown = ttk.Combobox(root, textvariable=selected_version, state="readonly")
+    dropdown['values'] = ("5.0.12", "5.0.13")
+    dropdown.grid(row=0, column=0, pady=10, padx=10)
+
+    # To store the folder path
+    folder_path = None
+
+    messagebox.showwarning("CLOSE ALL SC2-RELATED PROGRAMS BEFORE PROCEEDING!", "Close all StarCraft II-related programs before proceeding\n(StarCraft II.exe, Battle.net, Agent.exe, the map editor, any other StarCraft II/Blizzard-related programs etc.)")
+
+    # Function to handle confirmation and folder selection
+    def on_confirm():
+        nonlocal folder_path  # Access the folder_path variable defined outside
+        if selected_version.get() == "Select a version":
+            messagebox.showwarning("Warning", "Please select a game version.")
+            return
+
+        # Folder selection dialog
+        user_response = messagebox.askokcancel(
+            "StarCraft II Installation Folder Selection",
+            "In the next window, please select your StarCraft II installation folder.\n"
+            "Note: This folder should be named 'StarCraft II',\n"
+            "and is usually under Program Files (x86) on your main drive.\n(Click OK to continue)"
+        )
         if not user_response:
             sys.exit(0)
 
-        # open file explorer dialog
-        folder_path = filedialog.askdirectory(title="Select a folder")
+        folder_path = filedialog.askdirectory(title="Select your StarCraft II installation folder")
         if not folder_path:
             sys.exit(0)
 
-        # user did not find a StarCraft II-related folder
-        elif "StarCraft II" not in folder_path:
-            user_response = messagebox.askokcancel("Invalid Selection", "That path does not contain a folder named 'StarCraft II'.\nPlease try again.")
-            if not user_response:
-                sys.exit(0)
-            else:
-                continue
+        # User did not select a folder named "StarCraft II"
+        if "StarCraft II" not in folder_path:
+            messagebox.showerror("Invalid Selection", "The selected folder does not contain 'StarCraft II'. Please try again.")
+            folder_path = None  # Reset folder_path for retry
+            return
 
-        # user found documents folder, not game files folder
+        # User selected the StarCraft II folder in Documents
         elif "Documents" in folder_path:
-            messagebox.askokcancel("Invalid Selection", "Find your StarCraft II installation folder,\nnot your StarCraft II documents folder!")
-            if not user_response:
-                sys.exit(0)
-            else:
-                continue
+            messagebox.showerror("Invalid Selection", "Do not select the 'StarCraft II' Documents folder. Try again.")
+            folder_path = None  # Reset folder_path for retry
+            return
 
-        # just in case the user went too deep into the folder
-        if not folder_path.endswith("StarCraft II") or folder_path.endswith ("StarCraft II/StarCraft II"):
-            temp_string = folder_path.split("StarCraft II")[0]
-            # messagebox.showinfo("Adjusting Selection","Input detected: " + folder_path + "\nDefaulting to: " + temp_string + "StarCraft II")
-            folder_path = temp_string + "StarCraft II"
-            print(folder_path)
-        break
+        # Handles paths that go too deep into the installation folder
+        if not folder_path.endswith("StarCraft II") or folder_path.endswith("StarCraft II/StarCraft II"):
+            folder_path = folder_path.split("StarCraft II")[0] + "StarCraft II"
         
-    return folder_path
+        root.destroy()  # Close the window after successful selection
 
-def move_base_92440():
-    # delete existing Base92440, if present
-    if os.path.isdir(f"{versions_path}/Base92440"):
-        shutil.rmtree(f"{versions_path}/Base92440")
-    
-    # move Base92440 folder
-    source = f"{local_path}/Base92440"
-    dest = f"{versions_path}/Base92440"
+    # Create a confirm button
+    confirm_button = ttk.Button(root, text="Confirm", command=on_confirm)
+    confirm_button.grid(row=1, column=0, pady=10)
+
+    # Start the GUI event loop
+    root.mainloop()
+
+    # Return the results
+    return [selected_version.get(), folder_path]
+
+def move_base():
+    # Check if build folders already exist, and delete them if present
+
+    # Move the appropriate build folder
+    build_string = f"{version_dict[target_version][0]}"
+    source = f"{local_path}/Base" + build_string
+    dest = f"{versions_path}/Base" + build_string
     shutil.copytree(source, dest, dirs_exist_ok = True)
-    
-def backup_files():
-    if not os.path.exists(backup_path):
-        os.mkdir(backup_path)
 
-    # Move non-92440 version files into backup folder
+def backup_files():
+    base_name = f"Base{version_dict[target_version][0]}"
+
+    # Create backup folder if it doesn't already exist
+    os.makedirs(backup_path, exist_ok=True)
+
+    # Move all non-essential version files into backup folder
     for folder in os.listdir(versions_path):
-        if folder != "Base92440":
-            if not os.path.isdir(f"{backup_path}/{folder}"):
-                print(os.path.isdir(f"{backup_path}/{folder}"))
-                source = versions_path + "/" + folder
-                dest = backup_path
-                shutil.move(source, dest)
+        folder_path = os.path.join(versions_path, folder)
+        dest_path = os.path.join(backup_path, folder)
+
+        # Check if folder contains the correct build .exe
+        if folder != base_name:
+            if os.path.isdir(dest_path):
+                shutil.rmtree(dest_path)
             else:
-                shutil.rmtree(f"{versions_path}/{folder}")
+                shutil.move(folder_path, dest_path)
 
     # Copy BlizzardBrowser.exe into backup folder
     if os.path.isfile(browser_path) and not os.path.isfile(f"{backup_path}/BlizzardBrowser.exe"):
-        source = browser_path
-        dest = backup_path
-        shutil.copy(source, dest)
+        shutil.copy(browser_path, backup_path)
 
     # Copy build info into backup folder
     if os.path.isfile(build_path) and not os.path.isfile(f"{backup_path}/.build.info"):
-        source = build_path
-        dest = backup_path
-        shutil.copy(source, dest)
+        shutil.copy(build_path, backup_path)    
+
+    print(f"Non-pertinent files successfully moved to {backup_path}.")                 
 
 def rename_browser():
     source = browser_path
@@ -126,33 +183,35 @@ def rename_browser():
                 os.rename(source, dest)
             else:
                 os.remove(source)
-        print("BlizzardBrowser.exe renamed successfully.")
-    except:
-        print("BlizzardBrowser.exe failed to rename, exiting program.")
-        return 1
-    return 0
+    except Exception as e:
+        print(f"An error occurred while renaming BlizzardBrowser.exe: {e}")
 
 def add_build_info():
-    insertion_string = "\nus|1|6b36ffd0acf5bf1cd8c3e289be78d120|124b1d8953c97fc96ff446ccb641a89c|f5703696f8f01d56ea9db9d115099dc7||tpr/sc2|level3.blizzard.com kr.cdn.blizzard.com blizzard.gcdn.cloudn.co.kr|http://blizzard.gcdn.cloudn.co.kr/?maxhosts=4 http://kr.cdn.blizzard.com/?maxhosts=4 http://level3.blizzard.com/?maxhosts=4 https://blizzard.gcdn.cloudn.co.kr/?fallback=1&maxhosts=4 https://blzddist1-a.akamaihd.net/?fallback=1&maxhosts=4 https://blzddistkr1-a.akamaihd.net/?fallback=1&maxhosts=4 https://kr.cdn.blizzard.com/?fallback=1&maxhosts=4 https://level3.ssl.blizzard.com/?fallback=1&maxhosts=4|Windows code US? acct-USA? geoip-US? enUS speech?:Windows code US? acct-USA? geoip-US? enUS text?|||5.0.13.92440||"
-    target = "Product!STRING:0"
     try:
-        with open(build_path, 'r') as file:
+        # Gather needed values
+        insertion_string = version_dict[target_version][1]
+        # print(insertion_string)
+        substring = version_dict[target_version][2]
+        # print(substring)
+        target = "Product!STRING:0"
+
+        with open(build_path, 'r+') as file:
             content = file.read()
-        if target not in content:
-            print(f"Target text '{target_text}' not found in file")
-            return
+            if not content:
+                file.write(build_init)
+                content = build_init
         
-        substring = "5.0.13.92440"
-        if substring not in content:
+            # If substring is already present, the target version build info is already present
+            if substring in content:
+                print("Build info already present. Skipping build info addition.")
+                return
+
+            # Add the build info and write back
             new_content = content.replace(target, target + insertion_string)
-        else:
-            print("Build info already added.")
-            return
-        
-        with open(build_path, 'w') as file:
+            file.seek(0)
             file.write(new_content)
 
-        print("Build info successfully added.")
+        print("Build info added successfully.")
     except Exception as e:
         print(f"An error occurred while adding build info: {e}")
 
@@ -163,6 +222,7 @@ def create_shortcut():
         with winshell.shortcut(shortcut) as link:
             link.path = target
             link.description = "SC2Switcher Shortcut"
+        print(f"SC2Switcher shortcut created successfully.")
     except Exception as e:
         print(f"An error occurred while creating a shortcut: {e}")
 
