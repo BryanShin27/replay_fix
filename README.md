@@ -18,7 +18,9 @@ This program is designed to work on Windows 10 / Windows 11 computers. If you ar
 - 3. Unzip the downloaded folder, open it, and run `replay_fix.exe`.
     - Your Internet browser and/or antivirus may freak out when trying to download or unzip this. If this happens, you will need to allow an exception manually.
         - Particularly, Chromium-based browsers seem to have this issue. Firefox is less alarmed.
-- 4. Follow the instructions to locate your StarCraft II installation folder.
+- 4. Follow the instructions on-screen:
+    - Select the desired version of StarCraft II.
+    - Locate your StarCraft II installation folder.
 - 5. A file named `SC2Switcher_x64.exe - Shortcut` should appear in the unzipped folder. Run it.
     - StarCraft II should load as normal, but the login screen will look a bit different, similar to `replay_fix_1.jpg`.
     - After a few seconds, the game will hang on a "Connecting to Blizzard services" dialog, as in `replay_fix_2.jpg`.
