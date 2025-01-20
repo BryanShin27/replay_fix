@@ -2,7 +2,9 @@
  
 Hello, stranger,
 
-This repository contains all the files you need to view old StarCraft II v5.0.13 replays.
+This repository contains all the files you need to view your old, broken StarCraft II replays.
+
+This program currently supports versions 5.0.12 and 5.0.13, but I plan to keep it updated as Blizzard will no doubt break more versions in the future.
 
 At the heart of it all is `replay_fix.exe`, which moves some files around to trick your game into running in offline mode. If you care about the details, you can read about the original method here:
 
