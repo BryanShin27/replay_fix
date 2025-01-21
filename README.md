@@ -1,5 +1,7 @@
 # replay_fix
 
+**PLEASE NOTE: Offline Mode only works for versions of the game during which you owned paid game content. If you did not own paid game content during the version of the game which you are trying to recover, this workaround will likely fail for you. Moreover, I'm not a subject matter expert on manipulating game data, nor am I associated with people like Talv who might be. I have simply written a program to automate a manual process they have described.**
+
 Hello, stranger,
 
 This repository contains all the files you need to view your old, broken StarCraft II replays.
@@ -14,8 +16,6 @@ At the heart of it all is `replay_fix.exe`, which moves some files around to tri
 - [Reddit post by u/losteden](https://www.reddit.com/r/starcraft/comments/1bpa5j3/comment/lc4266a/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1)
 
 For those of you interested in the source code, you can look at `replay_fix.py`.
-
-**PLEASE NOTE: Offline Mode only works for versions of the game during which you owned paid game content. If you did not own paid game content during the version of the game which you are trying to recover, this workaround will likely fail for you. Moreover, I'm not a subject matter expert on manipulating game data, nor am I associated with people like Talv who might be. I have simply written a program to automate a manual process they have described.**
 
 This program is designed to work on Windows 10 / Windows 11 computers. If you are a Mac or Linux user, you may need to consult the above links for the manual workaround.
 
