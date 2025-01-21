@@ -1,17 +1,18 @@
 import os
 import shutil
 import sys
+import time
 import tkinter as tk
 from tkinter import filedialog, messagebox, ttk
 import winshell
 
 primary_path = "C:/Program Files (x86)/StarCraft II"
-browser_path = primary_path + "/Support/BlizzardBrowser/BlizzardBrowser.exe"
-build_path = primary_path + "/.build.info"
-versions_path = primary_path + "/Versions"
-backup_path = primary_path + "/Backup"
-switcher_path = primary_path + "/Support64/SC2Switcher_x64.exe"
-support64_path = primary_path + "/Support64"
+browser_path = ""
+build_path = ""
+versions_path = ""
+backup_path = ""
+switcher_path = ""
+support64_path = ""
 local_path = os.getcwd()
 
 # CDN configuration --- must be updated every ~3-4(?) weeks
@@ -31,30 +32,35 @@ version_dict = {
     ],
     "5.0.13": [
         92440,
-        "\nus|1|6b36ffd0acf5bf1cd8c3e289be78d120|" + cdn + "|f5703696f8f01d56ea9db9d115099dc7||tpr/sc2|level3.blizzard.com kr.cdn.blizzard.com blizzard.gcdn.cloudn.co.kr|http://blizzard.gcdn.cloudn.co.kr/?maxhosts=4 http://kr.cdn.blizzard.com/?maxhosts=4 http://level3.blizzard.com/?maxhosts=4 https://blizzard.gcdn.cloudn.co.kr/?fallback=1&maxhosts=4 https://blzddist1-a.akamaihd.net/?fallback=1&maxhosts=4 https://blzddistkr1-a.akamaihd.net/?fallback=1&maxhosts=4 https://kr.cdn.blizzard.com/?fallback=1&maxhosts=4 https://level3.ssl.blizzard.com/?fallback=1&maxhosts=4|Windows code US? acct-USA? geoip-US? enUS speech?:Windows code US? acct-USA? geoip-US? enUS text?|||5.0.13.92440||", "5.0.13.92440"
+        "\nus|1|6b36ffd0acf5bf1cd8c3e289be78d120|" + cdn + "|f5703696f8f01d56ea9db9d115099dc7||tpr/sc2|level3.blizzard.com us.cdn.blizzard.com|http://level3.blizzard.com/?maxhosts=4 http://us.cdn.blizzard.com/?maxhosts=4 https://blzddist1-a.akamaihd.net/?fallback=1&maxhosts=4 https://level3.ssl.blizzard.com/?fallback=1&maxhosts=4 https://us.cdn.blizzard.com/?fallback=1&maxhosts=4|Windows code US? acct-USA? geoip-US? enUS speech?:Windows code US? acct-USA? geoip-US? enUS text?|||5.0.13.92440||", "5.0.13.92440"
     ],
     "5.0.14": [
         93333,
-        "us|1|8453c2f1c98b955334c7284215429c36|" + cdn + "|f5703696f8f01d56ea9db9d115099dc7||tpr/sc2|level3.blizzard.com us.cdn.blizzard.com|http://level3.blizzard.com/?maxhosts=4 http://us.cdn.blizzard.com/?maxhosts=4 https://blzddist1-a.akamaihd.net/?fallback=1&maxhosts=4 https://level3.ssl.blizzard.com/?fallback=1&maxhosts=4 https://us.cdn.blizzard.com/?fallback=1&maxhosts=4|Windows code US? acct-USA? geoip-US? enUS speech?:Windows code US? acct-USA? geoip-US? enUS text?:Windows code US? acct-USA? geoip-US? koKR speech?:Windows code US? acct-USA? geoip-US? koKR text?|||5.0.14.93333||", "5.0.14.93333"
+        "\nus|1|8453c2f1c98b955334c7284215429c36|" + cdn + "|f5703696f8f01d56ea9db9d115099dc7||tpr/sc2|level3.blizzard.com us.cdn.blizzard.com|http://level3.blizzard.com/?maxhosts=4 http://us.cdn.blizzard.com/?maxhosts=4 https://blzddist1-a.akamaihd.net/?fallback=1&maxhosts=4 https://level3.ssl.blizzard.com/?fallback=1&maxhosts=4 https://us.cdn.blizzard.com/?fallback=1&maxhosts=4|Windows code US? acct-USA? geoip-US? enUS speech?:Windows code US? acct-USA? geoip-US? enUS text?|||5.0.14.93333||", "5.0.14.93333"
     ]
 }
 
 def main():
     # Get desired game version and user StarCraft II installation path
-    global target_version, primary_path
+    global target_version, primary_path, browser_path, build_path, versions_path, backup_path, switcher_path, support64_path
     [target_version, primary_path] = select_version_and_install_path()
     print(f"Version selected: {target_version}")
     print(f"Installation folder: {primary_path}")
+    browser_path = os.path.join(primary_path, "Support/BlizzardBrowser/BlizzardBrowser.exe")
+    build_path = os.path.join(primary_path, ".build.info")
+    versions_path = os.path.join(primary_path, "Versions")
+    backup_path = os.path.join(primary_path, "Backup")
+    switcher_path = os.path.join(primary_path, "Support64/SC2Switcher_x64.exe")
+    support64_path = os.path.join(primary_path, "Support64")
 
-    # Prepare installation folder by moving unneeded/important files
+    # Prepare installation folder by moving unneeded or important files
     backup_files()
-
     # Move needed game dependencies
     move_base()
-
+    # Remove BlizzardBrowser.exe, forcing offline mode
+    remove_browser()
     # Add build info and CDN configuration
     add_build_info()
-
     # Create SC2Switcher shortcut
     create_shortcut()
 
@@ -137,15 +143,6 @@ def select_version_and_install_path():
     # Return the results
     return [selected_version.get(), folder_path]
 
-def move_base():
-    # Check if build folders already exist, and delete them if present
-
-    # Move the appropriate build folder
-    build_string = f"{version_dict[target_version][0]}"
-    source = f"{local_path}/Base" + build_string
-    dest = f"{versions_path}/Base" + build_string
-    shutil.copytree(source, dest, dirs_exist_ok = True)
-
 def backup_files():
     base_name = f"Base{version_dict[target_version][0]}"
 
@@ -170,21 +167,24 @@ def backup_files():
 
     # Copy build info into backup folder
     if os.path.isfile(build_path) and not os.path.isfile(f"{backup_path}/.build.info"):
-        shutil.copy(build_path, backup_path)    
+        shutil.copy(build_path, backup_path)
 
     print(f"Non-pertinent files successfully moved to {backup_path}.")                 
 
-def rename_browser():
-    source = browser_path
-    dest = browser_path + ".bak"
+def move_base():
+    # Move the desired version/build folder
+    build_string = f"{version_dict[target_version][0]}"
+    source = f"{local_path}/Base" + build_string
+    dest = f"{versions_path}/Base" + build_string
+    shutil.copytree(source, dest, dirs_exist_ok = True)
+
+def remove_browser():
+    # Delete BlizzardBrowser.exe --- cutting off the connection to Battle.net servers
     try:
-        if os.path.isfile(source):
-            if not os.path.isfile(dest):
-                os.rename(source, dest)
-            else:
-                os.remove(source)
+        if os.path.isfile(browser_path):
+            os.remove(browser_path)
     except Exception as e:
-        print(f"An error occurred while renaming BlizzardBrowser.exe: {e}")
+        print(f"An error occurred while removing BlizzardBrowser.exe: {e}")
 
 def add_build_info():
     try:
@@ -217,13 +217,14 @@ def add_build_info():
 
 def create_shortcut():
     try:
-        target = switcher_path
-        shortcut = local_path + "/SC2Switcher_x64.exe - Shortcut.lnk"
+        shortcut = os.path.join(local_path, "SC2Switcher_x64.exe - Shortcut.lnk")
         with winshell.shortcut(shortcut) as link:
-            link.path = target
+            link.path = switcher_path
             link.description = "SC2Switcher Shortcut"
         print(f"SC2Switcher shortcut created successfully.")
     except Exception as e:
         print(f"An error occurred while creating a shortcut: {e}")
 
 main()
+print(f"This terminal will close automatically in 10 seconds...")
+time.sleep(10)
