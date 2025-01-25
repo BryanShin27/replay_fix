@@ -35,7 +35,7 @@ This program is designed to work on Windows 10 / Windows 11 computers. If you ar
         - This means YOU CANNOT AUTOMATICALLY RETRIEVE MISSING MAP/MOD DATA.
         - If you need access to map/mod data, please download them by playing with said maps/mods in Online Mode before viewing replays in Offline Mode.
 
-If you mess up, or are simply done viewing old replays and want to play the current version again, simply use Scan and Repair on StarCraft II in the Battle.net launcher.
+If you mess up, or are done viewing old replays and want to play the current version again, simply use Scan and Repair on StarCraft II in the Battle.net launcher.
 
 I have no reason to believe this program will cause any serious adverse effects on your computer, but I am not responsible for any issues caused by users incorrectly following the instructions, manually tampering with their own game files to work around any bugs resulting from using this program, etc.
 
