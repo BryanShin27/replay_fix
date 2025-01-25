@@ -1,6 +1,6 @@
 # replay_fix
 
-**PLEASE NOTE: Offline Mode only works for versions of the game during which you owned paid game content. If you did not own paid game content during the version of the game which you are trying to recover, this workaround will likely fail for you. Moreover, I'm not a subject matter expert on manipulating game data, nor am I associated with people like Talv who are. I have simply haphazardly written a program to automate a manual process they have described.**
+**PLEASE NOTE: Offline Mode only works for versions of the game during which you owned paid game content (e.g. HotS/LotV/Nova campaigns, co-op commanders, unit/structure skins/etc.). If you did not own paid game content during the version of the game which you are trying to recover, this workaround will likely fail for you. Moreover, I'm not a subject matter expert on manipulating game data, nor am I associated with people like Talv who are. I have simply haphazardly written a program to automate a manual process they have described.**
 
 Hello, stranger,
 
