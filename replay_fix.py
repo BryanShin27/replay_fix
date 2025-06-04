@@ -16,7 +16,7 @@ support64_path = ""
 local_path = os.getcwd()
 
 # CDN configuration --- must be updated every ~3-4(?) weeks
-cdn = "124b1d8953c97fc96ff446ccb641a89c"
+cdn = "dea194011a8a3ca967f9813c979bc893"
 
 # idk why I ended up needing to have this here but I guess I do
 build_init = "Branch!STRING:0|Active!DEC:1|Build Key!HEX:16|CDN Key!HEX:16|Install Key!HEX:16|IM Size!DEC:4|CDN Path!STRING:0|CDN Hosts!STRING:0|CDN Servers!STRING:0|Tags!STRING:0|Armadillo!STRING:0|Last Activated!STRING:0|Version!STRING:0|KeyRing!HEX:16|Product!STRING:0"
