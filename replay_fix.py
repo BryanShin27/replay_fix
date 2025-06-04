@@ -36,11 +36,11 @@ version_dict = {
         "\nus|1|6b36ffd0acf5bf1cd8c3e289be78d120|" + cdn + "|f5703696f8f01d56ea9db9d115099dc7||tpr/sc2|level3.blizzard.com us.cdn.blizzard.com|http://level3.blizzard.com/?maxhosts=4 http://us.cdn.blizzard.com/?maxhosts=4 https://blzddist1-a.akamaihd.net/?fallback=1&maxhosts=4 https://level3.ssl.blizzard.com/?fallback=1&maxhosts=4 https://us.cdn.blizzard.com/?fallback=1&maxhosts=4|Windows code US? acct-USA? geoip-US? enUS speech?:Windows code US? acct-USA? geoip-US? enUS text?|||5.0.13.92440||",
         "5.0.13.92440"
     ],
-    "5.0.14": [
-        93333,
-        "\nus|1|8453c2f1c98b955334c7284215429c36|" + cdn + "|f5703696f8f01d56ea9db9d115099dc7||tpr/sc2|level3.blizzard.com us.cdn.blizzard.com|http://level3.blizzard.com/?maxhosts=4 http://us.cdn.blizzard.com/?maxhosts=4 https://blzddist1-a.akamaihd.net/?fallback=1&maxhosts=4 https://level3.ssl.blizzard.com/?fallback=1&maxhosts=4 https://us.cdn.blizzard.com/?fallback=1&maxhosts=4|Windows code US? acct-USA? geoip-US? enUS speech?:Windows code US? acct-USA? geoip-US? enUS text?|||5.0.14.93333||",
-        "5.0.14.93333"
-    ]
+    #"5.0.14": [
+    #    93333,
+    #    "\nus|1|8453c2f1c98b955334c7284215429c36|" + cdn + "|f5703696f8f01d56ea9db9d115099dc7||tpr/sc2|level3.blizzard.com us.cdn.blizzard.com|http://level3.blizzard.com/?maxhosts=4 http://us.cdn.blizzard.com/?maxhosts=4 https://blzddist1-a.akamaihd.net/?fallback=1&maxhosts=4 https://level3.ssl.blizzard.com/?fallback=1&maxhosts=4 https://us.cdn.blizzard.com/?fallback=1&maxhosts=4|Windows code US? acct-USA? geoip-US? enUS speech?:Windows code US? acct-USA? geoip-US? enUS text?|||5.0.14.93333||",
+    #    "5.0.14.93333"
+    #]
 }
 
 def main():
